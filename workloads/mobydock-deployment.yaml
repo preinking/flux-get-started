@@ -19,7 +19,10 @@ spec:
     activeDeadlineSeconds: 21600
     recreateParams:
       timeoutSeconds: 600
-    resources: {}
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
     rollingParams:
       intervalSeconds: 1
       maxSurge: 25%
