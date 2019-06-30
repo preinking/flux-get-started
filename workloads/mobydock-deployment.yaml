@@ -40,7 +40,7 @@ spec:
         env:
         - name: PYTHONUNBUFFERED
           value: "true"
-        image: preinking/mobydock:0.2.0
+        image: preinking/mobydock:0.2.1
         imagePullPolicy: Always
         name: mobydock
         ports:
