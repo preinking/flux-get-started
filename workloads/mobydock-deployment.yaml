@@ -6,7 +6,8 @@ metadata:
   creationTimestamp: null
   generation: 1
   labels:
-    app: mobydock
+    app: mobydock-demo
+    template: mobydock-demo-template
   name: mobydock
   namespace: mobydock
 spec:
@@ -16,6 +17,8 @@ spec:
     name: mobydock
   strategy:
     activeDeadlineSeconds: 21600
+    recreateParams:
+      timeoutSeconds: 600
     resources: {}
     rollingParams:
       intervalSeconds: 1
