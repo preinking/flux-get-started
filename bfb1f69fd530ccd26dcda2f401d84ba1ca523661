@@ -1,0 +1,1 @@
+{"jobID":"60164e89-faf4-6af5-939b-6e0c966dcaa8","spec":{"type":"policy","cause":{"Message":"","User":"Paul Reinking \u003cpreinking@users.noreply.github.com\u003e"},"spec":{"demo:deployment/podinfo":{"add":{"tag_all":"glob:1.4.*"},"remove":{}}}},"result":null}
