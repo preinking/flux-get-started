@@ -3,6 +3,7 @@ kind: DeploymentConfig
 metadata:
   annotations:
     template.alpha.openshift.io/wait-for-ready: "true"
+    flux.weave.works/automated: "true"
   creationTimestamp: null
   generation: 1
   labels:
