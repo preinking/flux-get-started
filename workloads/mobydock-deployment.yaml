@@ -48,6 +48,7 @@ spec:
           env:
             - name: PYTHONUNBUFFERED
               value: 'true'
+          image: 'preinking/mobydock:latest'
           imagePullPolicy: Always
           name: mobydock
           ports:
@@ -63,16 +64,7 @@ spec:
       terminationGracePeriodSeconds: 30
   test: false
   triggers:
-  - imageChangeParams:
-      automatic: true
-      containerNames:
-      - mobydock
-      from:
-        kind: ImageStreamTag
-        name: 'mobydock:latest'
-        namespace: mobydock
-    type: ImageChange
-  - type: ConfigChange
+    - type: ConfigChange
 status:
   availableReplicas: 0
   latestVersion: 0
