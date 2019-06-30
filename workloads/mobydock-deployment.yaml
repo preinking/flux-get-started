@@ -1,10 +1,11 @@
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
     deployment.kubernetes.io/revision: "4"
     flux.weave.works/automated: "true"
-  creationTimestamp: null
+  creationTimestamp:
   generation: 1
   labels:
     app: mobydock-demo
@@ -24,7 +25,7 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      creationTimestamp: null
+      creationTimestamp:
       labels:
         app: mobydock
     spec:
