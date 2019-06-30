@@ -34,7 +34,6 @@ spec:
             secretKeyRef:
               key: database-password
               name: redis
-        image: 172.30.1.1:5000/openshift/redis@sha256:ea13fc7d5bd4531f89734a004c7ae2d34dc6a88809df4c8ec12885b7cbf51710
         imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3

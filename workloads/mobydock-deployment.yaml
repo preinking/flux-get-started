@@ -1,0 +1,76 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    template.alpha.openshift.io/wait-for-ready: "true"
+  creationTimestamp: null
+  generation: 1
+  labels:
+    app: mobydock
+  name: mobydock
+  namespace: mobydock
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    name: mobydock
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        name: mobydock
+    spec:
+      containers:
+        - args:
+            - gunicorn
+            - '-b'
+            - '0.0.0.0:8000'
+            - '--reload'
+            - '--access-logfile'
+            - '-'
+            - 'mobydock.app:create_app()'
+          env:
+            - name: PYTHONUNBUFFERED
+              value: 'true'
+          imagePullPolicy: Always
+          name: mobydock
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+  test: false
+  triggers:
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - mobydock
+      from:
+        kind: ImageStreamTag
+        name: 'mobydock:latest'
+        namespace: mobydock
+    type: ImageChange
+  - type: ConfigChange
+status:
+  availableReplicas: 0
+  latestVersion: 0
+  observedGeneration: 0
+  replicas: 0
+  unavailableReplicas: 0
+  updatedReplicas: 0

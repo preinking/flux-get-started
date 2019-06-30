@@ -1,0 +1,20 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  creationTimestamp: null
+  labels:
+    app: mobydock-demo
+    template: mobydock-demo-template
+  name: mobydock
+  namespace: mobydock
+spec:
+  port:
+    targetPort: 8000-8000
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: mobydock
+    weight: 100
+  wildcardPolicy: None
