@@ -6,15 +6,15 @@ metadata:
   creationTimestamp: null
   generation: 1
   labels:
-    app: redis-ephemeral
-    template: redis-ephemeral-template
-  name: redis
+    app: postgresql-persistent
+    template: postgresql-persistent-template
+  name: postgresql
   namespace: mobydock
 spec:
   replicas: 1
   revisionHistoryLimit: 10
   selector:
-    name: redis
+    name: postgresql
   strategy:
     activeDeadlineSeconds: 21600
     recreateParams:
@@ -25,36 +25,45 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        name: redis
+        name: postgresql
     spec:
       containers:
       - env:
-        - name: REDIS_PASSWORD
+        - name: POSTGRESQL_USER
+          valueFrom:
+            secretKeyRef:
+              key: database-user
+              name: postgresql
+        - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
               key: database-password
-              name: redis
-        image: 172.30.1.1:5000/openshift/redis@sha256:ea13fc7d5bd4531f89734a004c7ae2d34dc6a88809df4c8ec12885b7cbf51710
+              name: postgresql
+        - name: POSTGRESQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              key: database-name
+              name: postgresql
+        image: 172.30.1.1:5000/openshift/postgresql@sha256:c78aadb5114b2cac6ae65177272ec417c10142395fea03eb5c73f77220fd5e85
         imagePullPolicy: Always
         livenessProbe:
+          exec:
+            command:
+            - /usr/libexec/check-container
+            - --live
           failureThreshold: 3
-          initialDelaySeconds: 30
+          initialDelaySeconds: 120
           periodSeconds: 10
           successThreshold: 1
-          tcpSocket:
-            port: 6379
-          timeoutSeconds: 1
-        name: redis
+          timeoutSeconds: 10
+        name: postgresql
         ports:
-        - containerPort: 6379
+        - containerPort: 5432
           protocol: TCP
         readinessProbe:
           exec:
             command:
-            - /bin/sh
-            - -i
-            - -c
-            - test "$(redis-cli -h 127.0.0.1 -a $REDIS_PASSWORD ping)" == "PONG"
+            - /usr/libexec/check-container
           failureThreshold: 3
           initialDelaySeconds: 5
           periodSeconds: 10
@@ -70,25 +79,26 @@ spec:
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
-        - mountPath: /var/lib/redis/data
-          name: redis-data
+        - mountPath: /var/lib/pgsql/data
+          name: postgresql-data
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
       volumes:
-      - emptyDir: {}
-        name: redis-data
+      - name: postgresql-data
+        persistentVolumeClaim:
+          claimName: postgresql
   test: false
   triggers:
   - imageChangeParams:
       automatic: true
       containerNames:
-      - redis
+      - postgresql
       from:
         kind: ImageStreamTag
-        name: redis:3.2
+        name: postgresql:9.6
         namespace: openshift
     type: ImageChange
   - type: ConfigChange
