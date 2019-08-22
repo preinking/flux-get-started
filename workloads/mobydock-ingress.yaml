@@ -3,11 +3,11 @@ kind: Ingress
 metadata:
   creationTimestamp: null
   generation: 1
-  name: mobydock-com
+  name: mobydock-test-rig-net
   namespace: mobydock
 spec:
   rules:
-  - host: mobydock.com
+  - host: mobydock.test-rig.net
     http:
       paths:
       - backend:
