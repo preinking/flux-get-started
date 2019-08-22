@@ -1,10 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  annotations:
-    openshift.io/description: "Initial mobydock project"
-    openshift.io/display-name: "Mobydock Demo"
   creationTimestamp: null
-  labels:
-    name: mobydock
   name: mobydock
+spec: {}
+status: {}
