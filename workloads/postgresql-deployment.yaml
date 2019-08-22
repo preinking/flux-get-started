@@ -5,6 +5,7 @@ metadata:
   labels:
     app: postgresql
   name: postgresql
+  namespace: mobydock
 spec:
   replicas: 1
   strategy:

@@ -5,6 +5,7 @@ metadata:
   labels:
     app: mobydock
   name: mobydock
+  namespace: mobydock
 spec:
   ports:
   - name: "8000"
