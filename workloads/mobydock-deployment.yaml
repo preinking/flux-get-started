@@ -18,15 +18,7 @@ spec:
         app: mobydock
     spec:
       containers:
-      - args:
-        - gunicorn
-        - -b
-        - 0.0.0.0:8000
-        - --reload
-        - --access-logfile
-        - '-'
-        - mobydock.app:create_app()
-        env:
+      - env:
         - name: PYTHONUNBUFFERED
           value: "true"
         image: preinking/mobydock
@@ -34,11 +26,5 @@ spec:
         ports:
         - containerPort: 8000
         resources: {}
-        volumeMounts:
-        - mountPath: /mobydock
-          name: mobydock-data
       restartPolicy: Always
-      volumes:
-      - name: mobydock-data
-        emptyDir: {}
 status: {}

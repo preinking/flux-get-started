@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  creationTimestamp: null
+  generation: 1
+  name: mobydock-com
+  namespace: mobydock
+spec:
+  rules:
+  - host: mobydock.com
+    http:
+      paths:
+      - backend:
+          serviceName: mobydock
+          servicePort: 8000
+        path: /
+status:
+  loadBalancer: {}
