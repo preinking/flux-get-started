@@ -1,100 +1,31 @@
-apiVersion: apps.openshift.io/v1
-kind: DeploymentConfig
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
-  annotations:
-    template.alpha.openshift.io/wait-for-ready: "true"
   creationTimestamp: null
-  generation: 1
   labels:
-    app: redis-ephemeral
-    template: redis-ephemeral-template
+    app: redis
   name: redis
-  namespace: mobydock
 spec:
   replicas: 1
-  revisionHistoryLimit: 10
-  selector:
-    name: redis
   strategy:
-    activeDeadlineSeconds: 21600
-    recreateParams:
-      timeoutSeconds: 600
-    resources: {}
     type: Recreate
   template:
     metadata:
       creationTimestamp: null
       labels:
-        name: redis
+        app: redis
     spec:
       containers:
-      - env:
-        - name: REDIS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: database-password
-              name: redis
-        imagePullPolicy: Always
-        livenessProbe:
-          failureThreshold: 3
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          successThreshold: 1
-          tcpSocket:
-            port: 6379
-          timeoutSeconds: 1
+      - image: redis:5.0-buster
         name: redis
         ports:
         - containerPort: 6379
-          protocol: TCP
-        readinessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -i
-            - -c
-            - test "$(redis-cli -h 127.0.0.1 -a $REDIS_PASSWORD ping)" == "PONG"
-          failureThreshold: 3
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
-        resources:
-          requests:
-            cpu: 100m
-            memory: 256Mi
-        securityContext:
-          capabilities: {}
-          privileged: false
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
+        resources: {}
         volumeMounts:
         - mountPath: /var/lib/redis/data
           name: redis-data
-      dnsPolicy: ClusterFirst
       restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
-      terminationGracePeriodSeconds: 30
       volumes:
-      - emptyDir: {}
-        name: redis-data
-  test: false
-  triggers:
-  - imageChangeParams:
-      automatic: true
-      containerNames:
-      - redis
-      from:
-        kind: ImageStreamTag
-        name: redis:3.2
-        namespace: openshift
-    type: ImageChange
-  - type: ConfigChange
-status:
-  availableReplicas: 0
-  latestVersion: 0
-  observedGeneration: 0
-  replicas: 0
-  unavailableReplicas: 0
-  updatedReplicas: 0
+      - name: redis-data
+        emptyDir: {}
+status: {}

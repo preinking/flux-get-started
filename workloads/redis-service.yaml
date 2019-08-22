@@ -1,22 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    template.kubernetes.io/expose-uri: redis://{.spec.clusterIP}:{.spec.ports[?(.name=="redis")].port}
   creationTimestamp: null
   labels:
-    app: redis-ephemeral
-    template: redis-ephemeral-template
+    app: redis
   name: redis
-  namespace: mobydock
 spec:
   ports:
-  - port: 6379
-    protocol: TCP
+  - name: "6379"
+    port: 6379
     targetPort: 6379
   selector:
-    app: redis-ephemeral
-  sessionAffinity: None
-  type: ClusterIP
+    app: redis
 status:
   loadBalancer: {}

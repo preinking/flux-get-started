@@ -1,23 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    template.openshift.io/expose-uri: mobydock://{.spec.clusterIP}:{.spec.ports[?(.name=="mobydock")].port}
   creationTimestamp: null
   labels:
-    app: mobydock-demo
-    template: mobydock-demo-template
+    app: mobydock
   name: mobydock
-  namespace: mobydock
 spec:
   ports:
-  - name: 8000-8000
+  - name: "8000"
     port: 8000
-    protocol: TCP
     targetPort: 8000
   selector:
     app: mobydock
-  sessionAffinity: None
-  type: ClusterIP
 status:
   loadBalancer: {}
