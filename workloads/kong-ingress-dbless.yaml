@@ -434,8 +434,8 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
-    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:eu-west-1:461900487870:certificate/b540ba84-939f-4f98-a82c-35c9244ee771
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
   name: kong-proxy
   namespace: kong
 spec:
@@ -445,6 +445,10 @@ spec:
     port: 80
     protocol: TCP
     targetPort: 8000
+  - name: proxy-ssl
+    port: 443
+    protocol: TCP
+    targetPort: 8443
   selector:
     app: ingress-kong
   type: LoadBalancer
@@ -463,7 +467,7 @@ spec:
   selector:
     app: ingress-kong
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -496,6 +500,8 @@ spec:
           value: /dev/stderr
         - name: KONG_ADMIN_LISTEN
           value: 127.0.0.1:8444 ssl
+        - name: KONG_TRUSTED_IPS
+          value: 0.0.0.0/0
         image: kong:1.3
         lifecycle:
           preStop:
@@ -518,6 +524,9 @@ spec:
         ports:
         - containerPort: 8000
           name: proxy
+          protocol: TCP
+        - containerPort: 8443
+          name: proxy-ssl
           protocol: TCP
         - containerPort: 9542
           name: metrics
@@ -552,7 +561,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
-        image: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller:0.6.0
+        image: kong-docker-kubernetes-ingress-controller.bintray.io/kong-ingress-controller:0.6.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
